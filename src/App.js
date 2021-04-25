@@ -5,6 +5,7 @@ import './App.css'
 import Books from './Books'
 import { Route } from 'react-router'
 import { Link } from 'react-router-dom'
+import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
   state = {
@@ -18,9 +19,9 @@ class BooksApp extends React.Component {
     })
   }
 
-  handleSearch(event) {
-    BooksAPI.search(event.target.value)
-      .then(search => {
+  handleSearch = async (event) => {
+    try {
+      const search = await BooksAPI.search(event.target.value)
         if (search.error) {
           return this.setState({ search: [] })
         }
@@ -31,9 +32,12 @@ class BooksApp extends React.Component {
               return state.books[index]
             }
             else return book
-        }) }))
-      })
-      .catch(_ => this.setState(() => ({ search: [] })))
+          })
+        }))
+    }
+    catch(_) {
+      this.clearSearch()
+    }
   }
 
   clearSearch = () => {
@@ -63,20 +67,7 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        <Route path="/search">
-          <div className="search-books">
-            <div className="search-books-bar">
-              <Link to='/'><button className="close-search" onClick={this.clearSearch}>Close</button></Link>
-              <div className="search-books-input-wrapper">
-                <input type="text" placeholder="Search by title or author" onChange={(e) => this.handleSearch(e)}/>
-
-              </div>
-            </div>
-            <div className="search-books-results">
-              <Books books={this.state.search} changeShelf={this.changeShelf} />
-            </div>
-          </div>
-        </Route>
+        <SearchBooks changeShelf={this.changeShelf} clearSearch={this.clearSearch} books={this.state.search} handleSearch={this.handleSearch} />
         <Route exact path='/'>
           <div className="list-books">
             <div className="list-books-title">
