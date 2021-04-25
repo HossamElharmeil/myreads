@@ -1,5 +1,4 @@
 import React from 'react'
-import { update } from './BooksAPI'
 
 const Book = (props) => {
     const { book, book: { title, authors, shelf } } = props
