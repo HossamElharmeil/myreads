@@ -2,12 +2,19 @@ import React from 'react'
 import { update } from './BooksAPI'
 
 const Book = (props) => {
-    const { book, book: { title, authors, shelf, imageLinks: { thumbnail } } } = props
+    const { book, book: { title, authors, shelf } } = props
+    let thumbnail = ''
+    try {
+        thumbnail = props.book.imageLinks.thumbnail
+    } catch (error) {
+        thumbnail = ''
+    }
+
     return (
         <li>
             <div className="book">
                 <div className="book-top">
-                <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: `url(${thumbnail ? thumbnail : ''})` }}></div>
+                <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: `url(${thumbnail})` }}></div>
                 <div className="book-shelf-changer">
                     <select onChange={(event) => props.changeShelf(book, event.target.value)} value={shelf}>
                         <option value="move" disabled>Move to...</option>
