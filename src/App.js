@@ -14,7 +14,7 @@ class BooksApp extends React.Component {
   
   componentDidMount() {
     BooksAPI.getAll().then(books => {
-      this.setState(() => ({ books }))
+      this.setState({ books })
     })
   }
 
@@ -22,7 +22,7 @@ class BooksApp extends React.Component {
     BooksAPI.search(event.target.value)
       .then(search => {
         if (search.error) {
-          return this.setState(() => ({ search: [] }))
+          return this.setState({ search: [] })
         }
         return this.setState((state) => ({
           search: search.map(book => {
@@ -34,6 +34,10 @@ class BooksApp extends React.Component {
         }) }))
       })
       .catch(_ => this.setState(() => ({ search: [] })))
+  }
+
+  clearSearch = () => {
+    this.setState({ search: [] })
   }
 
   changeShelf = async (book, shelf) => {
@@ -62,7 +66,7 @@ class BooksApp extends React.Component {
         <Route path="/search">
           <div className="search-books">
             <div className="search-books-bar">
-              <Link to='/'><button className="close-search">Close</button></Link>
+              <Link to='/'><button className="close-search" onClick={this.clearSearch}>Close</button></Link>
               <div className="search-books-input-wrapper">
                 <input type="text" placeholder="Search by title or author" onChange={(e) => this.handleSearch(e)}/>
 
