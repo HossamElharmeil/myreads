@@ -4,7 +4,7 @@ import './App.css'
 
 import Books from './Books'
 import { Route } from 'react-router'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 class BooksApp extends React.Component {
   
@@ -36,6 +36,24 @@ class BooksApp extends React.Component {
       })
       .catch(_ => this.setState(() => ({ search: [] })))
   }
+
+  changeShelf = async (book, shelf) => {
+    await BooksAPI.update(book, shelf)
+      
+    this.setState((state) => {
+      const index = state.books.findIndex(query => query.id === book.id)
+
+      if (shelf === 'none' && index !== -1) {
+        state.books.splice(index, 1)
+      }
+      else if (index === -1 && shelf !== 'none') 
+        state.books.push(book)
+      else
+        state.books[index].shelf = shelf
+      
+      return state  
+    })
+  }
   
   render() {
     return (
@@ -58,7 +76,7 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="search-books-results">
-              <Books books={this.state.search} />
+              <Books books={this.state.search} changeShelf={this.changeShelf} />
             </div>
           </div>
         </Route>
@@ -72,19 +90,19 @@ class BooksApp extends React.Component {
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Currently Reading</h2>
                   <div className="bookshelf-books">
-                    <Books books={this.state.books.filter(book => book.shelf === "currentlyReading")}/>
+                    <Books books={this.state.books.filter(book => book.shelf === "currentlyReading")} changeShelf={this.changeShelf} />
                   </div>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
                     <div className="bookshelf-books">
-                      <Books books={this.state.books.filter(book => book.shelf === "wantToRead")}/>
+                      <Books books={this.state.books.filter(book => book.shelf === "wantToRead")} changeShelf={this.changeShelf} />
                   </div>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
                     <div className="bookshelf-books">
-                      <Books books={this.state.books.filter(book => book.shelf === "read")}/>
+                      <Books books={this.state.books.filter(book => book.shelf === "read")} changeShelf={this.changeShelf}/>
                   </div>
                 </div>
               </div>
