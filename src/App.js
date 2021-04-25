@@ -32,7 +32,14 @@ class BooksApp extends React.Component {
         if (search.error) {
           return this.setState(() => ({ search: [] }))
         }
-        return this.setState(() => ({ search }))
+        return this.setState((state) => ({
+          search: search.map(book => {
+            const index = state.books.findIndex(query => query.id === book.id)
+            if (index !== -1) {
+              return state.books[index]
+            }
+            else return book
+        }) }))
       })
       .catch(_ => this.setState(() => ({ search: [] })))
   }
