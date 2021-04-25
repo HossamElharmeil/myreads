@@ -1,12 +1,13 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
+
 const Book = (props) => {
     const { book, book: { title, authors, shelf } } = props
+
     let thumbnail = ''
-    try {
-        thumbnail = props.book.imageLinks.thumbnail
-    } catch (error) {
-        thumbnail = ''
+    if (book.imageLinks && book.imageLinks.thumbnail) {
+        thumbnail = book.imageLinks.thumbnail
     }
 
     return (
@@ -24,11 +25,16 @@ const Book = (props) => {
                     </select>
                 </div>
                 </div>
-                <div className="book-title">{title ? title : ''}</div>
+                <div className="book-title">{title || ''}</div>
                 <div className="book-authors">{authors ? authors.join(', ') : ''}</div>
             </div>
         </li>
     )
+}
+
+Book.protoType = {
+    book: PropTypes.object.isRequired,
+    changeShelf: PropTypes.func
 }
 
 export default Book
